@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <climits>
+#include <cmath>
 
 #include "SLList.hpp"
 
@@ -79,7 +80,6 @@ int SLList::sum() {
 }
 
 
-
 SLList *SLList::remove(int i) {
 	SLList *tempList = this;
 	if (tempList == NIL) {
@@ -106,10 +106,56 @@ SLList *SLList::reverse() {
 	return tempList2;
 }
 
-//int SLList::max() {
-//	SLList *tempList = this;
-//	int maxOf = 0;
-//	while (tempList->rest() != NULL) {
-//		if(tempList->first()>tempList->rest
+//SLList *SLList::sublist(int start, int end) {
+//	SLList *prevList = NIL; //stores the previous itteration's list
+//	SLList *outList = NIL; //is set to a new first each itteration that then has its rest set to the previous whole itteration list
+//	for (int i = 1; i < end - start; i++) {
+//		outList->setFirst(nth(end - i));
+//		outList->setRest(prevList);
+//		prevList = outList;
 //	}
+//	return (outList);
 //}
+
+SLList *SLList::sublist(int start, int end) {
+	SLList *tempList = this;
+	if (start == 0 && end == 0) {
+		return NIL;
+	}
+	else if (start > 0 && end > 0) {
+		return rest()->sublist(start - 1, end - 1);
+	}
+	else if (start == 0 && end > 0) {
+		return new SLList(tempList->first(), rest()->sublist(0,end-1));
+	}
+}
+
+SLList *SLList::merge(SLList *b) {
+	SLList *mainList = this;
+
+	if (mainList == NIL) {
+		return b;
+	}
+	else if (b == NIL) {
+		return mainList;
+	}
+	else if (mainList->first() <= b->first()) {
+		return new SLList(mainList->first(), mainList->rest()->merge(b));
+	}
+	else {
+		return new SLList(b->first(), b->rest()->merge(mainList));
+	} 
+}
+
+SLList *SLList::mergesort() {
+	int thisLength = this->length();
+	if (thisLength <= 1) {
+		return this;
+	}
+	else {
+		int mid = (int)floor((double)thisLength / 2);
+		SLList *left = sublist(0,mid)->mergesort();
+		SLList *right = sublist(mid,thisLength)->mergesort();
+		return left->merge(right);
+	}
+}

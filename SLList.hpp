@@ -18,13 +18,16 @@ public:
   SLList *remove(int i);
   SLList *reverse();
 
+  SLList *sublist(int start, int end);
+  SLList *merge(SLList *b);
+  SLList *mergesort();
+
   int firstStorage;
   SLList *restStorage;
   SLList *newRest;
   int inc;
 
   int sum();
-  //int max();
 };
 
 #endif
